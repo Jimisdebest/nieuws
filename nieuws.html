@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nieuws</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        body {
+            background: #f4f6fa;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1300px;
+            width: 100%;
+        }
+
+        /* header / titel */
+        .header {
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: linear-gradient(145deg, #111827, #2d3a4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: inline-block;
+            border-bottom: 4px solid #2563eb;
+            padding-bottom: 0.25rem;
+        }
+
+        .header p {
+            color: #4b5563;
+            margin-top: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        /* nieuwsgrid — alle foto's als kaarten */
+        .nieuws-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        /* nieuwskaart */
+        .nieuws-card {
+            background: white;
+            border-radius: 1.8rem;
+            overflow: hidden;
+            box-shadow: 0 20px 30px -10px rgba(0,20,40,0.15);
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(255,255,255,0.3);
+            backdrop-filter: blur(2px);
+        }
+
+        .nieuws-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 28px 35px -8px rgba(0,35,70,0.25);
+        }
+
+        /* foto gedeelte — 16/9 verhouding, altijd gevuld */
+        .nieuws-foto {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            background-color: #d1d5db;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 300;
+            color: #6b7280;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            transition: background 0.15s;
+            border-bottom: 2px solid #ffffff40;
+        }
+
+        /* als er geen foto is (placeholder) */
+        .foto-placeholder-icon {
+            opacity: 0.7;
+            filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.1));
+        }
+
+        /* tekst onder foto */
+        .nieuws-content {
+            padding: 1.5rem 1.2rem 1.5rem 1.2rem;
+            background: white;
+        }
+
+        .nieuws-titel {
+            font-size: 1.5rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: #0a1a2b;
+            margin-bottom: 0.4rem;
+        }
+
+        .nieuws-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.85rem;
+            color: #5f6b7a;
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .nieuws-categorie {
+            background: #e2e8f0;
+            padding: 0.2rem 1rem;
+            border-radius: 30px;
+            font-weight: 600;
+            color: #2d3c4e;
+        }
+
+        .nieuws-datum {
+            font-weight: 400;
+        }
+
+        .nieuws-summary {
+            color: #2d3f55;
+            line-height: 1.5;
+            margin-bottom: 1.2rem;
+            font-size: 1rem;
+        }
+
+        .lees-meer {
+            background: none;
+            border: none;
+            color: #2563eb;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+            cursor: default;
+            font-size: 0.95rem;
+        }
+
+        .lees-meer span {
+            font-size: 1.2rem;
+        }
+
+        /* footer / hint */
+        .footer-hint {
+            margin-top: 2rem;
+            border-top: 2px dashed #cbd5e1;
+            padding-top: 1.8rem;
+            text-align: center;
+            color: #475569;
+        }
+
+        .footer-hint a {
+            color: #2563eb;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        .footer-hint a:hover {
+            text-decoration: underline;
+        }
+
+        .emoji-large {
+            font-size: 3rem;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <!-- header -->
+    <div class="header">
+        <h1>Nieuws</h1>
+        <p>Nieuwsberichten over van alles en nog wat, maar vooral tech en Apple</p>
+    </div>
+
+    <!-- Nieuwsgrid - hier worden alle fotoberichten ingeladen -->
+    <div id="nieuwsGrid" class="nieuws-grid">
+        <!-- wordt dynamisch gevuld met JavaScript -->
+    </div>  
+</div>
+
+<script>
+    (function() {
+        let nieuwsData = [
+            {   
+                fotoUrl: 'Zelfsopdeolympischespelenwordendronesgebruikt.png', 
+                titel: 'Zelfs op de olympische spelen worden drones gebruikt',
+                categorie: 'Tech',
+                datum: '1 Januari 2026',
+                samenvatting: 'Als je ook schaatsen heeft gekeken de afgelopen tijd, zag je misschien ook soms een zwart puntje door het beeld zoeven. Vroeg je je af wat dat was? Het was een drone de wel 100 km/h kan, gemaakt door een YouTuber.'
+            },
+            {   
+                fotoUrl: 'Dronesmogendichterbijvliegveldenvliegen.png',
+                titel: 'Drones mogen dichterbij vliegvelden vliegen',
+                categorie: 'Tech',
+                datum: '1 Januari 2026',
+                samenvatting: 'Voorheen moest je 15 km afstand houden, nu is het 5. Goed nieuws voor mensen die dicht bij Schiphol wonen en een drone hebben.'
+            },
+            {   
+                fotoUrl: 'vraagteken.png',
+                titel: 'Niet duidelijk wat de regering wil met drones',
+                categorie: 'Tech',
+                datum: '1 Januari 2026',
+                samenvatting: 'Er zijn wat nieuwe regels over drones: de No - Fly zones zijn vergroot, wat betekent dat je op minder plekken kan vliegen. Ook is het nu verplicht om je drone in te schrijven bij de RDW. Dronebewijzen uit 2021 zijn nu ook allemaal ongeldig: ze hadden dat jaar niet streng genoeg getest.'
+            }
+        ];
+
+        // === RENDEREN: alle nieuwskaarten op basis van nieuwsData ===
+        function renderNieuws() {
+            const grid = document.getElementById('nieuwsGrid');
+            if (!grid) return;
+
+            let htmlString = '';
+            for (let i = 0; i < nieuwsData.length; i++) {
+                const item = nieuwsData[i];
+
+                let fotoStyle = '';
+                let fotoInnerHtml = '';
+
+                if (item.fotoUrl && item.fotoUrl.trim() !== '') {
+                    fotoStyle = `style="background-image: url('${item.fotoUrl}');"`;
+                    fotoInnerHtml = '';
+                } else {
+                    fotoStyle = '';
+                    fotoInnerHtml = '<span class="emoji-large">📷</span>';
+                }
+
+                htmlString += `
+                    <div class="nieuws-card">
+                        <div class="nieuws-foto" ${fotoStyle}>
+                            ${fotoInnerHtml}
+                        </div>
+                        <div class="nieuws-content">
+                            <div class="nieuws-meta">
+                                <span class="nieuws-categorie">${escapeHtml(item.categorie) || 'ALGEMEEN'}</span>
+                                <span class="nieuws-datum">${escapeHtml(item.datum) || 'onbekend'}</span>
+                            </div>
+                            <h2 class="nieuws-titel">${escapeHtml(item.titel) || 'nieuwsbericht'}</h2>
+                            <p class="nieuws-summary">${escapeHtml(item.samenvatting) || 'Geen samenvatting.'}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (nieuwsData.length === 0) {
+                htmlString = '<div style="grid-column:1/-1; text-align:center; padding: 3rem;">📭 Nog geen nieuwsberichten.</div>';
+            }
+
+            grid.innerHTML = htmlString;
+        }
+
+        function escapeHtml(unsafe) {
+            if (!unsafe) return unsafe;
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        renderNieuws();
+    })();
+</script>
+</body>
+</html>
